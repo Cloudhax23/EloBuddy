@@ -1,0 +1,11 @@
+C:\Users\JLB-AKW\Desktop\GoS\Assembly\Gnar\Gnar\bin\Debug\Gnar.exe.config
+C:\Users\JLB-AKW\Desktop\GoS\Assembly\Gnar\Gnar\bin\Debug\Gnar.exe
+C:\Users\JLB-AKW\Desktop\GoS\Assembly\Gnar\Gnar\bin\Debug\Gnar.pdb
+C:\Users\JLB-AKW\Desktop\GoS\Assembly\Gnar\Gnar\bin\Debug\EloBuddy.dll
+C:\Users\JLB-AKW\Desktop\GoS\Assembly\Gnar\Gnar\bin\Debug\EloBuddy.SDK.dll
+C:\Users\JLB-AKW\Desktop\GoS\Assembly\Gnar\Gnar\bin\Debug\SharpDX.dll
+C:\Users\JLB-AKW\Desktop\GoS\Assembly\Gnar\Gnar\bin\Debug\SharpDX.Direct3D9.dll
+C:\Users\JLB-AKW\Desktop\GoS\Assembly\Gnar\Gnar\bin\Debug\Newtonsoft.Json.dll
+C:\Users\JLB-AKW\Desktop\GoS\Assembly\Gnar\Gnar\obj\Debug\Gnar.csprojResolveAssemblyReference.cache
+C:\Users\JLB-AKW\Desktop\GoS\Assembly\Gnar\Gnar\obj\Debug\Gnar.exe
+C:\Users\JLB-AKW\Desktop\GoS\Assembly\Gnar\Gnar\obj\Debug\Gnar.pdb
