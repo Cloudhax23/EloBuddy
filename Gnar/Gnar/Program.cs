@@ -16,9 +16,7 @@ namespace Gnar
     class Program
     {
         public static Spell.Skillshot Q;
-        public static Spell.Skillshot QB;
         public static Spell.Skillshot E;
-        public static Spell.Skillshot EB;
         public static Spell.Skillshot R;
         public static Spell.Skillshot WB;
 
@@ -40,7 +38,6 @@ namespace Gnar
             Q = new Spell.Skillshot(SpellSlot.Q, 1100, SkillShotType.Linear);
             WB = new Spell.Skillshot(SpellSlot.W, 475, SkillShotType.Linear);
             E = new Spell.Skillshot(SpellSlot.E, 475, SkillShotType.Circular);
-            EB = new Spell.Skillshot(SpellSlot.E, 475, SkillShotType.Circular);
             R = new Spell.Skillshot(SpellSlot.R, 490,SkillShotType.Circular);
 
             menu = MainMenu.AddMenu("Gnar", "Gnar");
@@ -50,9 +47,7 @@ namespace Gnar
             ComboMenu.AddSeparator();
             ComboMenu.Add("useQCombo", new CheckBox("Use Q"));
             ComboMenu.Add("useECombo", new CheckBox("Use E"));
-            ComboMenu.Add("useQBCombo", new CheckBox("Use Q Big"));
             ComboMenu.Add("useWBCombo", new CheckBox("Use W"));
-            ComboMenu.Add("useEBCombo", new CheckBox("Use E Big"));
             ComboMenu.Add("useRCombo", new CheckBox("Use R"));
             ComboMenu.Add("useRComboSlider", new Slider("Subtract Ult Push by: ", 20, 0, 100));
 
@@ -70,8 +65,6 @@ namespace Gnar
             var useQ = ComboMenu["useQCombo"].Cast<CheckBox>().CurrentValue;
             var useW = ComboMenu["useWBCombo"].Cast<CheckBox>().CurrentValue;
             var useE = ComboMenu["useECombo"].Cast<CheckBox>().CurrentValue;
-            var useQB = ComboMenu["useQBCombo"].Cast<CheckBox>().CurrentValue;
-            var useEB = ComboMenu["useEBCombo"].Cast<CheckBox>().CurrentValue;
             var useR = ComboMenu["useRCombo"].Cast<CheckBox>().CurrentValue;
 
             foreach (var target in HeroManager.Enemies.Where(o => o.IsValidTarget(1400) && !o.IsDead && !o.IsZombie))
@@ -84,13 +77,9 @@ namespace Gnar
                 {
                     WB.Cast(target);
                 }
-                if (E.Name == "GnarE" && useE && E.IsReady() && target.IsValidTarget(700))
+                if (useE && E.IsReady() && target.IsValidTarget(700))
                 {
                     E.Cast(Game.CursorPos);
-                }
-                else if (useEB && EB.IsReady() && target.IsValidTarget(700))
-                {
-                    EB.Cast(Game.CursorPos);
                 }
             if (Ult.isChecked(ComboMenu, "useRCombo") && R.IsReady())
             {
