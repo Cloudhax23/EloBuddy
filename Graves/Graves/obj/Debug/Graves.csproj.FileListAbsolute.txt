@@ -6,6 +6,5 @@ C:\Users\JLB-AKW\Desktop\GoS\Assembly\Graves\Graves\bin\Debug\EloBuddy.SDK.dll
 C:\Users\JLB-AKW\Desktop\GoS\Assembly\Graves\Graves\bin\Debug\SharpDX.dll
 C:\Users\JLB-AKW\Desktop\GoS\Assembly\Graves\Graves\bin\Debug\SharpDX.Direct3D9.dll
 C:\Users\JLB-AKW\Desktop\GoS\Assembly\Graves\Graves\bin\Debug\Newtonsoft.Json.dll
-C:\Users\JLB-AKW\Desktop\GoS\Assembly\Graves\Graves\obj\Debug\Graves.csprojResolveAssemblyReference.cache
 C:\Users\JLB-AKW\Desktop\GoS\Assembly\Graves\Graves\obj\Debug\Graves.exe
 C:\Users\JLB-AKW\Desktop\GoS\Assembly\Graves\Graves\obj\Debug\Graves.pdb

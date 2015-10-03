@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using EloBuddy;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Enumerations;
 using EloBuddy.SDK.Events;
 using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
+using EloBuddy.SDK.Rendering;
+using SharpDX;
+using System.Drawing;
 
 
 namespace Graves
@@ -29,7 +30,7 @@ namespace Graves
             get { return ObjectManager.Player; }
         }
 
-        public static Menu menu, ComboMenu;
+        public static Menu menu, ComboMenu, DrawingsMenu, FarmMenu;
 
         private static void Loading_OnLoadingComplete(EventArgs args)
         {
@@ -51,13 +52,50 @@ namespace Graves
             ComboMenu.Add("useECombo", new CheckBox("Use E"));
             ComboMenu.Add("useRCombo", new CheckBox("Use R"));
 
+            DrawingsMenu = menu.AddSubMenu("Drawings", "Drawings");
+            DrawingsMenu.Add("DrawQ", new CheckBox("Draw Q"));
+            DrawingsMenu.Add("DrawW", new CheckBox("Draw W"));
+            DrawingsMenu.Add("DrawE", new CheckBox("Draw E"));
+            DrawingsMenu.Add("DrawR", new CheckBox("Draw R"));
+
+            FarmMenu = menu.AddSubMenu("Farm", "Farm");
+            FarmMenu.AddGroupLabel("Farm Settings");
+            FarmMenu.AddSeparator();
+            FarmMenu.AddGroupLabel("LaneClear");
+            FarmMenu.Add("useQ", new CheckBox("Use Q"));
+
             Game.OnTick += Game_OnTick;
+            Drawing.OnDraw += Drawing_OnDraw;
+        }
+        private static void Drawing_OnDraw(EventArgs args)
+        {
+            if (DrawingsMenu["DrawQ"].Cast<CheckBox>().CurrentValue)
+            {
+                Drawing.DrawCircle(_Player.Position, Q.Range, System.Drawing.Color.Crimson);
+            }
+
+            if (DrawingsMenu["DrawW"].Cast<CheckBox>().CurrentValue)
+            {
+                Drawing.DrawCircle(_Player.Position, W.Range, System.Drawing.Color.Crimson);
+            }
+
+            if (DrawingsMenu["DrawE"].Cast<CheckBox>().CurrentValue)
+            {
+                Drawing.DrawCircle(_Player.Position, E.Range, System.Drawing.Color.Crimson);
+            }
+
+            if (DrawingsMenu["DrawR"].Cast<CheckBox>().CurrentValue)
+            {
+                Drawing.DrawCircle(_Player.Position, R.Range, System.Drawing.Color.Crimson);
+            }
+
         }
 
         private static void Game_OnTick(EventArgs args)
         {
             Orbwalker.ForcedTarget = null;
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo)) Combo();
+            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LaneClear)) LaneClear();
         }
 
         public static float RDamage(Obj_AI_Base target)
@@ -90,6 +128,15 @@ namespace Graves
                 {
                     R.Cast(target);
                 }
+            }
+        }
+        public static void LaneClear()
+        {
+            var minions = ObjectManager.Get<Obj_AI_Minion>().Where(m => m.IsValidTarget(Q.Range));
+            var useQ = FarmMenu["useQ"].Cast<CheckBox>().CurrentValue;
+            if (Q.IsReady() && Q.IsInRange(minions.FirstOrDefault().Position) && Q.GetPrediction(minions.FirstOrDefault()).HitChance >= HitChance.Medium)
+            {
+                Q.Cast(minions.FirstOrDefault().Position);
             }
         }
     }
