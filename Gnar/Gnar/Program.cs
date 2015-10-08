@@ -81,7 +81,7 @@ namespace Gnar
                 {
                     E.Cast(Game.CursorPos);
                 }
-            if (Ult.isChecked(ComboMenu, "useRCombo") && R.IsReady())
+            if (useR && R.IsReady())
             {
                 AIHeroClient priorityTarget = null;
                 foreach (var enemy in ObjectManager.Get<AIHeroClient>().Where(a => a.IsEnemy).Where(a => !a.IsDead).Where(a => R.IsInRange(a)))
@@ -97,10 +97,10 @@ namespace Gnar
                 }
 
                 if (priorityTarget != null && priorityTarget.IsValid && Ult.IsUltable(priorityTarget))
-                {
+                    {
                     R.Cast(priorityTarget);
+                    }
                 }
-        }
             }
         }
     }
