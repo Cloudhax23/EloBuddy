@@ -14,4 +14,3 @@ C:\Users\JLB-AKW\Documents\GitHub\EloBuddy\Gnar\Gnar\obj\Debug\Gnar.exe
 C:\Users\JLB-AKW\Documents\GitHub\EloBuddy\Gnar\Gnar\obj\Debug\Gnar.pdb
 C:\Users\JLB-AKW\Documents\GitHub\EloBuddy\Gnar\Gnar\bin\Debug\Gnar.exe
 C:\Users\JLB-AKW\Documents\GitHub\EloBuddy\Gnar\Gnar\bin\Debug\Gnar.pdb
-C:\Users\JLB-AKW\Documents\GitHub\EloBuddy\Gnar\Gnar\obj\Debug\Gnar.csprojResolveAssemblyReference.cache
