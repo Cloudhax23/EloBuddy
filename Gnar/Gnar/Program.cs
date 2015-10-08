@@ -30,7 +30,7 @@ namespace Gnar
         }
         
 
-        public static Menu menu, ComboMenu, HarassMenu, LastHitMenu;
+        public static Menu menu, ComboMenu, HarassMenu, LastHitMenu, MiscMenu;
 
         private static void Loading_OnLoadingComplete(EventArgs args)
         {
@@ -62,8 +62,15 @@ namespace Gnar
             LastHitMenu.AddSeparator();
             LastHitMenu.Add("useQLastHit", new CheckBox("Use Q"));
             LastHitMenu.Add("useWLastHit", new CheckBox("Use W"));
+            // Misc
+            MiscMenu = menu.AddSubMenu("Misc", "Misc");
+            MiscMenu.AddGroupLabel("Misc Settings");
+            MiscMenu.AddSeparator();
+            MiscMenu.Add("useR", new CheckBox("Auto R"));
+            MiscMenu.Add("R", new Slider("When X enemy is stunnable by R", 2, 5, 0));
 
             Game.OnTick += Game_OnTick;
+            Game.OnUpdate += Game_OnUpdate;
         }
 
         private static void Game_OnTick(EventArgs args)
@@ -74,6 +81,33 @@ namespace Gnar
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LastHit)) LastHit();
         }
 
+         private static void Game_OnUpdate(EventArgs args)
+        {
+            if (_Player.CountEnemiesInRange(R.Range) >= Ult.getSliderValue(Program.MiscMenu, "R")) 
+             {
+                 var useR = MiscMenu["useR"].Cast<CheckBox>().CurrentValue;
+                 if (useR && R.IsReady())
+                 {
+                     AIHeroClient priorityTarget = null;
+                     foreach (var enemy in ObjectManager.Get<AIHeroClient>().Where(a => a.IsEnemy).Where(a => !a.IsDead).Where(a => R.IsInRange(a)))
+                     {
+                         if (priorityTarget == null)
+                         {
+                             priorityTarget = enemy;
+                         }
+
+                         if (!Ult.IsUltable(priorityTarget))
+                             return;
+
+                     }
+
+                     if (priorityTarget != null && priorityTarget.IsValid && Ult.IsUltable(priorityTarget) && R.GetPrediction(priorityTarget).HitChance >= HitChance.Medium)
+                     {
+                         R.Cast(priorityTarget);
+                     }
+                 }
+             }
+        }
         public static void Combo()
         {
             var useQ = ComboMenu["useQCombo"].Cast<CheckBox>().CurrentValue;
@@ -95,7 +129,7 @@ namespace Gnar
                 {
                     E.Cast(Game.CursorPos);
                 }
-            if (useR && R.IsReady())
+                if (useR && R.IsReady() && _Player.CountEnemiesInRange(R.Range) >= Ult.getSliderValue(Program.MiscMenu, "R"))
             {
                 AIHeroClient priorityTarget = null;
                 foreach (var enemy in ObjectManager.Get<AIHeroClient>().Where(a => a.IsEnemy).Where(a => !a.IsDead).Where(a => R.IsInRange(a)))
@@ -110,7 +144,7 @@ namespace Gnar
 
                 }
 
-                if (priorityTarget != null && priorityTarget.IsValid && Ult.IsUltable(priorityTarget))
+                if (priorityTarget != null && priorityTarget.IsValid && Ult.IsUltable(priorityTarget) && R.GetPrediction(priorityTarget).HitChance >= HitChance.Medium)
                     {
                     R.Cast(priorityTarget);
                     }
@@ -132,7 +166,7 @@ namespace Gnar
         {
             var useQ = LastHitMenu["useQLastHit"].Cast<CheckBox>().CurrentValue;
             var useW = LastHitMenu["useWLastHit"].Cast<CheckBox>().CurrentValue;
-            var minions = ObjectManager.Get<Obj_AI_Minion>().Where(x => x.IsEnemy && x.IsValidTarget(Q.Range)).OrderBy(x => x.Health).FirstOrDefault();
+            var minions = ObjectManager.Get<Obj_AI_Minion>().Where(x => x.IsEnemy && x.IsValidTarget(1100)).OrderBy(x => x.Health).FirstOrDefault();
             if (useQ && _Player.GetSpellDamage(minions, SpellSlot.Q) >= minions.Health && !minions.IsDead && Q.GetPrediction(minions).HitChance >= HitChance.Medium)
              {
                  Q.Cast(minions);
