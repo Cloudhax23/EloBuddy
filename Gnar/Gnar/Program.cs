@@ -28,8 +28,9 @@ namespace Gnar
         {
             get { return ObjectManager.Player; }
         }
+        
 
-        public static Menu menu, ComboMenu;
+        public static Menu menu, ComboMenu, HarassMenu, LastHitMenu;
 
         private static void Loading_OnLoadingComplete(EventArgs args)
         {
@@ -41,7 +42,7 @@ namespace Gnar
             R = new Spell.Skillshot(SpellSlot.R, 490,SkillShotType.Circular);
 
             menu = MainMenu.AddMenu("Gnar", "Gnar");
-
+            // Combo
             ComboMenu = menu.AddSubMenu("Combo", "Combo");
             ComboMenu.AddGroupLabel("Combo Settings");
             ComboMenu.AddSeparator();
@@ -50,6 +51,17 @@ namespace Gnar
             ComboMenu.Add("useWBCombo", new CheckBox("Use W"));
             ComboMenu.Add("useRCombo", new CheckBox("Use R"));
             ComboMenu.Add("useRComboSlider", new Slider("Subtract Ult Push by: ", 20, 0, 100));
+            // Harass 
+            HarassMenu = menu.AddSubMenu("Harass", "Harass");
+            HarassMenu.AddGroupLabel("Harass Settings");
+            HarassMenu.AddSeparator();
+            HarassMenu.Add("useQHarass", new CheckBox("Use Q"));
+            // LastHit
+            LastHitMenu = menu.AddSubMenu("LastHit", "LastHit");
+            LastHitMenu.AddGroupLabel("LastHit Settings");
+            LastHitMenu.AddSeparator();
+            LastHitMenu.Add("useQLastHit", new CheckBox("Use Q"));
+            LastHitMenu.Add("useWLastHit", new CheckBox("Use W"));
 
             Game.OnTick += Game_OnTick;
         }
@@ -58,8 +70,10 @@ namespace Gnar
         {
             Orbwalker.ForcedTarget = null;
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo)) Combo();
+            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Harass)) Harass();
+            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LastHit)) LastHit();
         }
-        
+
         public static void Combo()
         {
             var useQ = ComboMenu["useQCombo"].Cast<CheckBox>().CurrentValue;
@@ -102,6 +116,31 @@ namespace Gnar
                     }
                 }
             }
+        }
+        public static void Harass()
+        {
+            var useQ = HarassMenu["useQHarass"].Cast<CheckBox>().CurrentValue;
+            foreach (var target in HeroManager.Enemies.Where(o => o.IsValidTarget(1400) && !o.IsDead && !o.IsZombie))
+            {
+                if (useQ && Q.IsReady() && Q.GetPrediction(target).HitChance >= HitChance.Medium)
+                {
+                    Q.Cast(target);
+                }
+            }
+        }
+        public static void LastHit()
+        {
+            var useQ = LastHitMenu["useQLastHit"].Cast<CheckBox>().CurrentValue;
+            var useW = LastHitMenu["useWLastHit"].Cast<CheckBox>().CurrentValue;
+            var minions = ObjectManager.Get<Obj_AI_Minion>().Where(x => x.IsEnemy && x.IsValidTarget(Q.Range)).OrderBy(x => x.Health).FirstOrDefault();
+            if (useQ && _Player.GetSpellDamage(minions, SpellSlot.Q) >= minions.Health && !minions.IsDead && Q.GetPrediction(minions).HitChance >= HitChance.Medium)
+             {
+                 Q.Cast(minions);
+             }
+             if (useW && _Player.GetSpellDamage(minions, SpellSlot.W) >= minions.Health && !minions.IsDead && WB.GetPrediction(minions).HitChance >= HitChance.Medium)
+             {
+                 WB.Cast(minions);
+             }
         }
     }
 }
