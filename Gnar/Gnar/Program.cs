@@ -16,7 +16,9 @@ namespace Gnar
     class Program
     {
         public static Spell.Skillshot Q;
+        public static Spell.Skillshot Q2;
         public static Spell.Skillshot E;
+        public static Spell.Skillshot E2;
         public static Spell.Skillshot R;
         public static Spell.Skillshot WB;
 
@@ -36,9 +38,9 @@ namespace Gnar
         {
             Bootstrap.Init(null);
 
-            Q = new Spell.Skillshot(SpellSlot.Q, 1100, SkillShotType.Linear);
+            Q = new Spell.Skillshot(SpellSlot.Q, 1125, SkillShotType.Linear,250,2500,60);
             WB = new Spell.Skillshot(SpellSlot.W, 475, SkillShotType.Linear);
-            E = new Spell.Skillshot(SpellSlot.E, 475, SkillShotType.Circular);
+            E = new Spell.Skillshot(SpellSlot.E, 475, SkillShotType.Circular, 0,1000,200);
             R = new Spell.Skillshot(SpellSlot.R, 490,SkillShotType.Circular);
 
             menu = MainMenu.AddMenu("Gnar", "Gnar");
