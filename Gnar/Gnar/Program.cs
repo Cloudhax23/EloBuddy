@@ -32,7 +32,7 @@ namespace Gnar
         }
         
 
-        public static Menu menu, ComboMenu, HarassMenu, LastHitMenu, MiscMenu;
+        public static Menu menu, ComboMenu, HarassMenu, LastHitMenu, LaneClearMenu, MiscMenu;
 
         private static void Loading_OnLoadingComplete(EventArgs args)
         {
@@ -40,7 +40,7 @@ namespace Gnar
 
             Q = new Spell.Skillshot(SpellSlot.Q, 1125, SkillShotType.Linear,250,2500,60);
             WB = new Spell.Skillshot(SpellSlot.W, 475, SkillShotType.Linear);
-            E = new Spell.Skillshot(SpellSlot.E, 475, SkillShotType.Circular, 0,1000,200);
+            E = new Spell.Skillshot(SpellSlot.E, 475, SkillShotType.Circular,0,1000,200);
             R = new Spell.Skillshot(SpellSlot.R, 490,SkillShotType.Circular);
 
             menu = MainMenu.AddMenu("Gnar", "Gnar");
@@ -64,6 +64,12 @@ namespace Gnar
             LastHitMenu.AddSeparator();
             LastHitMenu.Add("useQLastHit", new CheckBox("Use Q"));
             LastHitMenu.Add("useWLastHit", new CheckBox("Use W"));
+            // LaneClear
+            LaneClearMenu = menu.AddSubMenu("LaneClear", "LaneClear");
+            LaneClearMenu.AddGroupLabel("LaneClear Settings");
+            LaneClearMenu.AddSeparator();
+            LaneClearMenu.Add("useQLaneClear", new CheckBox("Use Q"));
+            LaneClearMenu.Add("useWLaneClear", new CheckBox("Use W"));
             // Misc
             MiscMenu = menu.AddSubMenu("Misc", "Misc");
             MiscMenu.AddGroupLabel("Misc Settings");
@@ -81,6 +87,7 @@ namespace Gnar
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo)) Combo();
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Harass)) Harass();
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LastHit)) LastHit();
+            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LaneClear)) LaneClear();
         }
 
          private static void Game_OnUpdate(EventArgs args)
@@ -123,7 +130,7 @@ namespace Gnar
                 {
                     Q.Cast(target);
                 }
-                if (useW && WB.IsReady() && WB.GetPrediction(target).HitChance >= HitChance.Medium && target.IsValidTarget(WB.Range))
+                if (useW && WB.IsReady() && WB.GetPrediction(target).HitChance >= HitChance.Medium && target.IsValidTarget(WB.Range) && target.HasBuffOfType(BuffType.Stun))
                 {
                     WB.Cast(target);
                 }
@@ -146,7 +153,7 @@ namespace Gnar
 
                 }
 
-                if (priorityTarget != null && priorityTarget.IsValid && Ult.IsUltable(priorityTarget) && R.GetPrediction(priorityTarget).HitChance >= HitChance.Medium)
+                if (priorityTarget != null && priorityTarget.IsValid && Ult.IsUltable(priorityTarget) && !priorityTarget.HasBuffOfType(BuffType.Stun) && R.GetPrediction(priorityTarget).HitChance >= HitChance.Medium)
                     {
                     R.Cast(priorityTarget);
                     }
@@ -177,6 +184,20 @@ namespace Gnar
              {
                  WB.Cast(minions);
              }
+        }
+        public static void LaneClear()
+        {
+            var useQ = LastHitMenu["useQLaneClear"].Cast<CheckBox>().CurrentValue;
+            var useW = LastHitMenu["useWLaneClear"].Cast<CheckBox>().CurrentValue;
+            var minions = ObjectManager.Get<Obj_AI_Minion>().Where(x => x.IsEnemy && x.IsValidTarget(1100)).OrderBy(x => x.Health).FirstOrDefault();
+            if (useQ && !minions.IsDead && Q.GetPrediction(minions).HitChance >= HitChance.Medium)
+            {
+                Q.Cast(minions);
+            }
+            if (useW && !minions.IsDead && WB.GetPrediction(minions).HitChance >= HitChance.Medium)
+            {
+                WB.Cast(minions);
+            }
         }
     }
 }
