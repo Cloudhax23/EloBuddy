@@ -20,6 +20,7 @@ namespace Graves
         public static Spell.Skillshot W;
         public static Spell.Skillshot E;
         public static Spell.Skillshot R;
+        private static Vector3 mousePos { get { return Game.CursorPos; } }
 
         static void Main(string[] args)
         {
@@ -122,7 +123,7 @@ namespace Graves
                 }
                 if (useE && E.IsReady() && target.IsValidTarget(700))
                 {
-                    E.Cast(Game.CursorPos);
+                    E.Cast(mousePos);
                 }
                 if (useR && R.IsReady() && R.GetPrediction(target).HitChance >= HitChance.High && target.Health <= RDamage(target) && target.IsValidTarget(R.Range))
                 {
@@ -134,10 +135,11 @@ namespace Graves
         {
             var minions = ObjectManager.Get<Obj_AI_Minion>().Where(m => m.IsValidTarget(Q.Range));
             var useQ = FarmMenu["useQ"].Cast<CheckBox>().CurrentValue;
-            if (Q.IsReady() && Q.IsInRange(minions.FirstOrDefault().Position) && Q.GetPrediction(minions.FirstOrDefault()).HitChance >= HitChance.Medium)
+            if (useQ && Q.IsReady() && Q.IsInRange(minions.FirstOrDefault().Position) && Q.GetPrediction(minions.FirstOrDefault()).HitChance >= HitChance.Medium)
             {
                 Q.Cast(minions.FirstOrDefault().Position);
             }
         }
     }
 }
+
